@@ -28,12 +28,12 @@ public class BOSS : PartModule
 {
     public override void OnAwake()
     {
-        if (BOSSBehaviour.BOSSBehaviourInstance == null)
-            BOSSBehaviour.BOSSBehaviourInstance = GameObject.Find("BOSS") ?? new GameObject("BOSS", typeof(BOSSBehaviour));
+        if (BXSSBehaviour.BOSSBehaviourInstance == null)
+            BXSSBehaviour.BOSSBehaviourInstance = GameObject.Find("BOSS") ?? new GameObject("BOSS", typeof(BXSSBehaviour));
     }
 }
 
-public class BOSSBehaviour : MonoBehaviour
+public class BXSSBehaviour : MonoBehaviour
 {
     public static GameObject BOSSBehaviourInstance;
 
@@ -43,13 +43,16 @@ public class BOSSBehaviour : MonoBehaviour
     private string kspDir2 = KSPUtil.ApplicationRootPath + @"PluginData/bxss/";
     public int screenshotCount,	superSampleValueInt = 1;
     public string superSampleValueString = "1";
-    public string screenshotKey = "f11";
+    public string screenshotKey = "z";
+    public string displayKey = "f11";
+    public bool display = false;
     public bool showHelp = false;
     public int i;
     public bool showGUI = false;
 
     public void Awake()
     {
+        loadSettings();
         DontDestroyOnLoad(this);
     }
 
@@ -76,33 +79,30 @@ public class BOSSBehaviour : MonoBehaviour
             screenshotMethod();
         }
 
-        showHelp = GUILayout.Toggle(showHelp, "+", GUILayout.ExpandWidth(true));
+        if (GUILayout.Button(showHelp ? "-" : "+", mainGUI, GUILayout.Width(30)))
+            showHelp = !showHelp;
+         
         GUILayout.EndHorizontal();
-        GUI.DragWindow(new Rect(0, 0, 10000, 20));
-    }
 
-    private void helpGUI(int WindowID)
-    {
-        GUILayout.BeginVertical();
-        GUILayout.Label("Current supersample value: " + superSampleValueInt.ToString(), GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
-        GUILayout.Label("Supersample value: ");
-        superSampleValueString = GUILayout.TextField(superSampleValueString);
-        try
+        if (showHelp)
         {
-            superSampleValueInt = Int32.Parse(superSampleValueString);
-            i = 0;
-        }
-        catch
-        {
-            while (i < 1)
-            { // stops the catch from spamming the debug log.
-                Debug.Log("You haven't entered an integer.");
-                i++;
+            GUILayout.BeginVertical();
+            GUILayout.Label("Current supersample value: " + superSampleValueInt.ToString(), GUILayout.ExpandHeight(true),
+                            GUILayout.ExpandWidth(true));
+            GUILayout.Label("Supersample value: ");
+            superSampleValueString = GUILayout.TextField(superSampleValueString);
+
+            int newSuperSampleValue;
+            if(int.TryParse(superSampleValueString, out newSuperSampleValue) && newSuperSampleValue >= 1)
+            {
+                superSampleValueInt = newSuperSampleValue;
+                superSampleValueString = superSampleValueInt.ToString();
             }
-        }
-        GUILayout.Label("You have taken " + screenshotCount + " screenshots.");
 
-        GUILayout.EndVertical();
+            GUILayout.Label("You have taken " + screenshotCount + " screenshots.");
+
+            GUILayout.EndVertical();
+        }
         GUI.DragWindow(new Rect(0, 0, 10000, 20));
     }
 
@@ -122,22 +122,24 @@ public class BOSSBehaviour : MonoBehaviour
 
     private void OnGUI()
     {
-        if (FlightGlobals.fetch != null && FlightGlobals.ActiveVessel != null)
+       // if (FlightGlobals.fetch != null && FlightGlobals.ActiveVessel != null
+        if(display)
         {
             GUI.skin = HighLogic.Skin;
-            windowPos = GUILayout.Window(569, windowPos, WindowGUI, "B.O.S.S.", GUILayout.Width(120));
-            if (showHelp)
-                helpWindowPos = GUILayout.Window(568, helpWindowPos, helpGUI, "More Info.", GUILayout.Width(150),
-                                                 GUILayout.Height(150));
+            windowPos = GUILayout.Window(569, windowPos, WindowGUI, "B.X.S.S.",
+                                         showHelp
+                                             ? new[] {GUILayout.Width(180), GUILayout.ExpandHeight(true)}
+                                             : new[] {GUILayout.Width(120), GUILayout.Height(60)});
         }
     }
 
     public void Update()
     {
         if (Input.GetKeyDown(screenshotKey))
-        {
             screenshotMethod();
-        }
+
+        if (Input.GetKeyDown(displayKey))
+            display = !display;
     }
 
     public Settings settings = new Settings();
@@ -151,6 +153,7 @@ public class BOSSBehaviour : MonoBehaviour
         settings.SetValue("BOSS::helpWindowPos.y", helpWindowPos.y.ToString());
         settings.SetValue("BOSS::showHelp", showHelp.ToString());
         settings.SetValue("BOSS::screenshotKey", screenshotKey);
+        settings.SetValue("BOSS::displayKey", displayKey);
         settings.SetValue("BOSS::showGUI", showGUI.ToString());
         settings.Save();
         print("Saved BOSS settings.");
@@ -166,6 +169,7 @@ public class BOSSBehaviour : MonoBehaviour
         screenshotCount = Convert.ToInt32(settings.GetValue("BOSS::screenshotCount"));
         showHelp = Convert.ToBoolean(settings.GetValue("BOSS::showHelp"));
         screenshotKey = (settings.GetValue("BOSS::screenshotKey"));
+        displayKey = (settings.GetValue("BOSS::displayKey"));
         showGUI = Convert.ToBoolean(settings.GetValue("BOSS::showGUI"));
         print("Loaded BOSS settings.");
     }
