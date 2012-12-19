@@ -34,7 +34,7 @@ class BXSSMainWindow : Window
         var superSampleField = new TextField
                                    {
                                        Value = settings.SupersampleAmount.ToString(CultureInfo.InvariantCulture),
-                                       Caption = "Supersample",
+                                       Caption = "Supersample: ",
                                        Validator = x =>
                                                        {
                                                            int val;
@@ -53,7 +53,6 @@ class BXSSMainWindow : Window
                                                   }
                                               }
                             };
-        var currentValLabel = new TrackingLabel(superSampleField);
         var screenshotButton = new Button {Text = "Screenshot", Clicked = () => _screenshot.Capture(_settings.SupersampleAmount), LayoutOptions = new[] {GUILayout.Width(85)}};
 
         _expandedControls = new List<AControl>
@@ -63,7 +62,6 @@ class BXSSMainWindow : Window
                            screenshotButton,
                            expandButton,
                            new EndHorizontal(),
-                           currentValLabel,
                            superSampleField,
                            setButton,
                            new EndVertical()

@@ -43,6 +43,7 @@ public class BXSSBehaviour : MonoBehaviour
     {
         if (Input.GetKeyDown(_settings.ScreenshotKey))
             _screenshot.Capture(_settings.SupersampleAmount);
+        
 
         if (Input.GetKeyDown(_settings.DisplayKey))
             _mainWindow.Visible = !_mainWindow.Visible;
