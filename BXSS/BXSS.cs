@@ -54,19 +54,9 @@ public class BXSSBehaviour : MonoBehaviour
     private void WindowGUI(int windowID)
     {
         GUIStyle mainGUI = new GUIStyle(GUI.skin.button);
-        mainGUI.normal.textColor = mainGUI.focused.textColor = Color.white;
-        mainGUI.hover.textColor = mainGUI.active.textColor = Color.yellow;
-        mainGUI.onNormal.textColor =
-            mainGUI.onFocused.textColor = mainGUI.onHover.textColor = mainGUI.onActive.textColor = Color.green;
-        mainGUI.padding = new RectOffset(8, 8, 8, 8);
 
+    //    mainGUI.padding = new RectOffset(8, 8, 8, 8);
 
-        GUIStyle infoGUI = new GUIStyle(GUI.skin.button);
-        infoGUI.normal.textColor = infoGUI.focused.textColor = Color.white;
-        infoGUI.hover.textColor = infoGUI.active.textColor = Color.yellow;
-        infoGUI.onNormal.textColor =
-            infoGUI.onFocused.textColor = infoGUI.onHover.textColor = infoGUI.onActive.textColor = Color.green;
-        infoGUI.padding = new RectOffset(8, 8, 8, 8);
         GUILayout.BeginHorizontal();
 
         if (GUILayout.Button("Screenshot", mainGUI, GUILayout.Width(85)))
