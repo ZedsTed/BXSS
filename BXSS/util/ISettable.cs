@@ -1,9 +1,9 @@
-﻿using System;
-
-namespace util
+﻿namespace util
 {
     public interface ISettable
     {
         void Set();
+
+        string Get();
     }
 }

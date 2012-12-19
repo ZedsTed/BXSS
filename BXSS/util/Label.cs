@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-
-namespace util
+﻿namespace util
 {
-    public class Label : IControl
+    using UnityEngine;
+
+    public class Label : AControl
     {
         public string Text { get; set; }
 
@@ -16,9 +16,14 @@ namespace util
             Text = text;
         }
 
-        public void Draw()
+        public override void Draw()
         {
-            GUILayout.Label(Text ?? "[NULL]");
+            BeforeDraw();
+            GUILayout.Label(Text ?? "[NULL]", LayoutOptions);
+        }
+
+        protected virtual void BeforeDraw()
+        {
         }
     }
 }

@@ -1,34 +1,34 @@
-﻿using UnityEngine;
-
-namespace util
+﻿namespace util
 {
-    public class BeginHorizontal : IControl
+    using UnityEngine;
+
+    public class BeginHorizontal : AControl
     {
-        public void Draw()
+        public override void Draw()
         {
             GUILayout.BeginHorizontal();
         }
     }
 
-    public class EndHorizontal : IControl
+    public class EndHorizontal : AControl
     {
-        public void Draw()
+        public override void Draw()
         {
             GUILayout.EndHorizontal();
         }
     }
 
-    public class BeginVertical : IControl
+    public class BeginVertical : AControl
     {
-        public void Draw()
+        public override void Draw()
         {
             GUILayout.BeginVertical();
         }
     }
 
-    public class EndVertical : IControl
+    public class EndVertical : AControl
     {
-        public void Draw()
+        public override void Draw()
         {
             GUILayout.EndVertical();
         }

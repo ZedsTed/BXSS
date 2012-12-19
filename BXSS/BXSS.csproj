@@ -46,16 +46,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BXSS.cs" />
+    <Compile Include="BXSSMainWindow.cs" />
     <Compile Include="BXSSSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Screenshot.cs" />
     <Compile Include="util\Button.cs" />
-    <Compile Include="util\IControl.cs" />
+    <Compile Include="util\AControl.cs" />
     <Compile Include="util\ISettable.cs" />
     <Compile Include="util\Label.cs" />
     <Compile Include="util\Layout.cs" />
     <Compile Include="util\PluginSettings.cs" />
     <Compile Include="util\SetButton.cs" />
     <Compile Include="util\TextField.cs" />
+    <Compile Include="util\ThrowIf.cs" />
+    <Compile Include="util\TrackingLabel.cs" />
     <Compile Include="util\Window.cs" />
   </ItemGroup>
   <ItemGroup />

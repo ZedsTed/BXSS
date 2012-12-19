@@ -1,11 +1,23 @@
-﻿using System;
-using UnityEngine;
-
-namespace util
+﻿namespace util
 {
-    public class TextField : IControl, ISettable
+    using System;
+    using UnityEngine;
+
+    // TODO: Add generic argument for value type
+    public class TextField : AControl, ISettable
     {
-        public string Value { get; set; }
+        public string Value
+        {
+            get { return _value; }
+            set
+            {
+                if (Validator(value))
+                {
+                    _value = value;
+                    _displayValue = _value;
+                }
+            }
+        }
 
         public string Caption
         {
@@ -13,10 +25,11 @@ namespace util
             set { _label = new Label(value); }
         }
 
-        public Func<string, bool> Validator { get; set; } 
+        public Func<string, bool> Validator { get; set; }
 
         private Label _label;
         private string _displayValue;
+        private string _value;
 
         public TextField()
             : this(null, "[DEFAULT]", _ => true)
@@ -26,18 +39,18 @@ namespace util
         public TextField(string caption, string value, Func<string, bool> validator)
         {
             Caption = caption;
-            Value = value;
             Validator = validator;
+            Value = value;
         }
 
-        public void Draw()
+        public override void Draw()
         {
             GUILayout.BeginHorizontal();
 
             if(!string.IsNullOrEmpty(Caption))
                 _label.Draw();
 
-            _displayValue = GUILayout.TextField(_displayValue);
+            _displayValue = GUILayout.TextField(_displayValue, LayoutOptions);
 
             GUILayout.EndHorizontal();
         }
@@ -51,6 +64,11 @@ namespace util
             }
 
             _displayValue = Value;
+        }
+
+        public string Get()
+        {
+            return Value;
         }
     }
 }

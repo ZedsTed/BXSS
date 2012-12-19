@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-
-namespace util
+﻿namespace util
 {
-    public class Window
+    using System.Collections.Generic;
+    using UnityEngine;
+
+    public abstract class Window
     {
         private static int _currentWindowID;
 
@@ -20,13 +20,15 @@ namespace util
         private readonly int _windowID;
 
         public string Caption { get; set; }
-        public Rect WindowRect { get; set; }
+        public Rect WindowPosition { get; set; }
         public bool Visible { get; set; }
         public bool Draggable { get; set; }
 
-        public List<IControl> Controls { get; set; }
+        public List<AControl> Controls { get; set; }
 
-        public Window()
+        protected GUILayoutOption[] LayoutOptions { get; set; }
+
+        protected Window()
         {
             _windowID = GetNextWindowID();
 
@@ -34,19 +36,38 @@ namespace util
             Visible = true;
             Draggable = true;
 
-            Controls = new List<IControl>();
+            Controls = new List<AControl>();
+
+            LayoutOptions = new[] { GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true) };
         }
 
-        // ID parameter needed for callback
-        public void Draw(int id)
+        public void Draw()
         {
             if (!Visible)
                 return;
 
-            foreach(var control in Controls)
+            GUI.skin = HighLogic.Skin;
+
+            DrawCore();
+
+            WindowPosition = GUILayout.Window(
+                _windowID,
+                WindowPosition,
+                DrawCallback,
+                string.IsNullOrEmpty(Caption) ? "" : Caption,
+                LayoutOptions
+                );
+        }
+
+        protected abstract void DrawCore();
+
+        // ID parameter needed for callback
+        public void DrawCallback(int id)
+        {
+            foreach (var control in Controls)
                 control.Draw();
 
-            if(Draggable)
+            if (Draggable)
                 GUI.DragWindow();
         }
     }

@@ -1,9 +1,9 @@
-﻿using System;
-using UnityEngine;
-
-namespace util
+﻿namespace util
 {
-    public class Button : IControl
+    using System;
+    using UnityEngine;
+
+    public class Button : AControl
     {
         public string Text { get; set; }
 
@@ -20,9 +20,9 @@ namespace util
             Clicked = clicked;
         }
 
-        public void Draw()
+        public override void Draw()
         {
-            if (GUILayout.Button(Text))
+            if (GUILayout.Button(Text, LayoutOptions))
                 Clicked();
         }
     }
