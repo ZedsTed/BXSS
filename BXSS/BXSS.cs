@@ -17,7 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with The Bolt-On Screenshot System.  If not, see <http://www.gnu.org/licenses/>.*/
 
-using System;
+using System.Globalization;
 using UnityEngine;
 
 public class BXSS : PartModule
@@ -33,14 +33,12 @@ public class BXSSBehaviour : MonoBehaviour
 {
     public static GameObject BOSSBehaviourInstance;
 
-    protected Rect windowPos;
-    protected Rect helpWindowPos;
-    private string kspDir = KSPUtil.ApplicationRootPath;
-    private string kspDir2 = KSPUtil.ApplicationRootPath + @"PluginData/BXSS/";
-    public int screenshotCount,	superSampleValueInt = 1;
+
+    public BXSSSettings settings;
+
+    public int screenshotCount;
     public string superSampleValueString = "1";
-    public string screenshotKey = "z";
-    public string displayKey = "f11";
+
     public bool display = false;
     public bool showHelp = false;
     public int i;
@@ -48,7 +46,8 @@ public class BXSSBehaviour : MonoBehaviour
 
     public void Awake()
     {
-        loadSettings();
+        settings = new BXSSSettings();
+        settings.Load();
         DontDestroyOnLoad(this);
     }
 
@@ -83,7 +82,7 @@ public class BXSSBehaviour : MonoBehaviour
         if (showHelp)
         {
             GUILayout.BeginVertical();
-            GUILayout.Label("Current supersample value: " + superSampleValueInt.ToString(), GUILayout.ExpandHeight(true),
+            GUILayout.Label("Current supersample value: " + settings.SupersampleAmount, GUILayout.ExpandHeight(true),
                             GUILayout.ExpandWidth(true));
             GUILayout.Label("Supersample value: ");
             superSampleValueString = GUILayout.TextField(superSampleValueString);
@@ -91,8 +90,8 @@ public class BXSSBehaviour : MonoBehaviour
             int newSuperSampleValue;
             if(int.TryParse(superSampleValueString, out newSuperSampleValue) && newSuperSampleValue >= 1)
             {
-                superSampleValueInt = newSuperSampleValue;
-                superSampleValueString = superSampleValueInt.ToString();
+                settings.SupersampleAmount = newSuperSampleValue;
+                superSampleValueString = settings.SupersampleAmount.ToString(CultureInfo.InvariantCulture);
             }
 
             GUILayout.Label("You have taken " + screenshotCount + " screenshots.");
@@ -105,9 +104,10 @@ public class BXSSBehaviour : MonoBehaviour
     public void screenshotMethod()
     {
         string screenshotFilename =  "Screenshot" + screenshotCount;
-        Application.CaptureScreenshot(kspDir2 + screenshotFilename + ".png", superSampleValueInt);
+        Application.CaptureScreenshot(KSPUtil.ApplicationRootPath + settings.ScreenshotDirectory + screenshotFilename + ".png", settings.SupersampleAmount);
         screenshotCount++;
-        saveSettings();
+        settings.Save();
+      //  saveSettings();
     }
 
     private void OnGUI()
@@ -116,7 +116,7 @@ public class BXSSBehaviour : MonoBehaviour
         if(display)
         {
             GUI.skin = HighLogic.Skin;
-            windowPos = GUILayout.Window(569, windowPos, WindowGUI, "B.X.S.S.",
+            settings.WindowPosition = GUILayout.Window(569, settings.WindowPosition, WindowGUI, "B.X.S.S.",
                                          showHelp
                                              ? new[] {GUILayout.Width(180), GUILayout.ExpandHeight(true)}
                                              : new[] {GUILayout.Width(120), GUILayout.Height(60)});
@@ -125,42 +125,10 @@ public class BXSSBehaviour : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKeyDown(screenshotKey))
+        if (Input.GetKeyDown(settings.ScreenshotKey))
             screenshotMethod();
 
-        if (Input.GetKeyDown(displayKey))
+        if (Input.GetKeyDown(settings.DisplayKey))
             display = !display;
-    }
-
-    public Settings settings = new Settings();
-
-    private void saveSettings()
-    {
-        settings.SetValue("BOSS::screenshotCount", screenshotCount.ToString());
-        settings.SetValue("BOSS::windowPos.x", windowPos.x.ToString());
-        settings.SetValue("BOSS::windowPos.y", windowPos.y.ToString());
-        settings.SetValue("BOSS::helpWindowPos.x", helpWindowPos.x.ToString());
-        settings.SetValue("BOSS::helpWindowPos.y", helpWindowPos.y.ToString());
-        settings.SetValue("BOSS::showHelp", showHelp.ToString());
-        settings.SetValue("BOSS::screenshotKey", screenshotKey);
-        settings.SetValue("BOSS::displayKey", displayKey);
-        settings.SetValue("BOSS::showGUI", showGUI.ToString());
-        settings.Save();
-        print("Saved BOSS settings.");
-    }
-
-    private void loadSettings()
-    {
-        settings.Load();
-        windowPos.x = Convert.ToSingle(settings.GetValue("BOSS::windowPos.x"));
-        windowPos.y = Convert.ToSingle(settings.GetValue("BOSS::windowPos.y"));
-        helpWindowPos.x = Convert.ToSingle(settings.GetValue("BOSS::helpWindowPos.x"));
-        helpWindowPos.y = Convert.ToSingle(settings.GetValue("BOSS::helpWindowPos.y"));
-        screenshotCount = Convert.ToInt32(settings.GetValue("BOSS::screenshotCount"));
-        showHelp = Convert.ToBoolean(settings.GetValue("BOSS::showHelp"));
-        screenshotKey = (settings.GetValue("BOSS::screenshotKey"));
-        displayKey = (settings.GetValue("BOSS::displayKey"));
-        showGUI = Convert.ToBoolean(settings.GetValue("BOSS::showGUI"));
-        print("Loaded BOSS settings.");
     }
 }
