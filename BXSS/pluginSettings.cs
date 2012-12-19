@@ -6,7 +6,7 @@ using KSP.IO;
 
 public class Settings
 {
-    PluginConfiguration pluginsettings = PluginConfiguration.CreateForType<BOSS>(null);
+    PluginConfiguration pluginsettings = PluginConfiguration.CreateForType<BXSS>(null);
 
     public void Load()
     {

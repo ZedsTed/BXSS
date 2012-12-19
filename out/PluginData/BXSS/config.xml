@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <string name="BOSS::screenshotCount">0</string>
+    <string name="BOSS::windowPos.x">505</string>
+    <string name="BOSS::windowPos.y">228</string>
+    <string name="BOSS::helpWindowPos.x">100</string>
+    <string name="BOSS::helpWindowPos.y">100</string>
+    <string name="BOSS::showHelp">True</string>
+    <string name="BOSS::screenshotKey">z</string>
+    <string name="BOSS::displayKey">f11</string>
+    <string name="BOSS::showGUI">True</string>
+</config>

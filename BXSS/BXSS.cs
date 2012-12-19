@@ -19,12 +19,8 @@ along with The Bolt-On Screenshot System.  If not, see <http://www.gnu.org/licen
 
 using System;
 using UnityEngine;
-using KSP.IO;
-using System.Collections;
-using System.Linq;
-using System.Collections.Generic;
 
-public class BOSS : PartModule
+public class BXSS : PartModule
 {
     public override void OnAwake()
     {
@@ -40,7 +36,7 @@ public class BXSSBehaviour : MonoBehaviour
     protected Rect windowPos;
     protected Rect helpWindowPos;
     private string kspDir = KSPUtil.ApplicationRootPath;
-    private string kspDir2 = KSPUtil.ApplicationRootPath + @"PluginData/bxss/";
+    private string kspDir2 = KSPUtil.ApplicationRootPath + @"PluginData/BXSS/";
     public int screenshotCount,	superSampleValueInt = 1;
     public string superSampleValueString = "1";
     public string screenshotKey = "z";
@@ -109,12 +105,6 @@ public class BXSSBehaviour : MonoBehaviour
     public void screenshotMethod()
     {
         string screenshotFilename =  "Screenshot" + screenshotCount;
-        print("Screenshot button pressed!");
-        print(screenshotFilename);
-        print(screenshotCount);
-        print(KSPUtil.ApplicationRootPath);
-        print(kspDir);
-        print("Your supersample value was " + superSampleValueInt + "!");
         Application.CaptureScreenshot(kspDir2 + screenshotFilename + ".png", superSampleValueInt);
         screenshotCount++;
         saveSettings();
