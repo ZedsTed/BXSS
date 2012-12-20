@@ -4,8 +4,6 @@
 
     public class Label : AControl
     {
-        public string Text { get; set; }
-
         public Label()
             : this("[DEFAULT]")
         {
@@ -15,6 +13,8 @@
         {
             Text = text;
         }
+
+        public string Text { get; set; }
 
         public override void Draw()
         {

@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-
-namespace util
+﻿namespace util
 {
+    using UnityEngine;
+
     public abstract class AControl
     {
         protected AControl()
@@ -9,8 +9,8 @@ namespace util
             LayoutOptions = new GUILayoutOption[0];
         }
 
-        public abstract void Draw();
-
         public GUILayoutOption[] LayoutOptions { get; set; }
+
+        public abstract void Draw();
     }
 }

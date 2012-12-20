@@ -5,10 +5,6 @@
 
     public class Button : AControl
     {
-        public string Text { get; set; }
-
-        public Action Clicked { get; set; }
-
         public Button()
             : this("[DEFAULT]", null)
         {
@@ -19,6 +15,9 @@
             Text = text;
             Clicked = clicked;
         }
+
+        public string Text { get; set; }
+        public Action Clicked { get; set; }
 
         public override void Draw()
         {

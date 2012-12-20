@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace util
+﻿namespace util
 {
+    using System;
     using System.Collections.Generic;
 
     public class SetButton : Button
@@ -11,8 +10,6 @@ namespace util
         {
         }
 
-        public new Action Clicked { get; set; }
-
         public SetButton(string text, List<ISettable> settableObjects)
         {
             Text = text;
@@ -20,6 +17,8 @@ namespace util
 
             base.Clicked = OnClick;
         }
+
+        public new Action Clicked { get; set; }
 
         public List<ISettable> SettableObjects { get; set; } 
 

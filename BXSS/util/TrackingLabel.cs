@@ -2,8 +2,6 @@
 {
     public class TrackingLabel : Label
     {
-        public ISettable TrackedControl { get; set; }
-
         public TrackingLabel()
             : this(null)
         {
@@ -13,6 +11,8 @@
         {
             TrackedControl = trackedControl;
         }
+
+        public ISettable TrackedControl { get; set; }
 
         protected override void BeforeDraw()
         {

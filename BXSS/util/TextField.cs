@@ -6,6 +6,22 @@
     // TODO: Add generic argument for value type
     public class TextField : AControl, ISettable
     {
+        private Label _label;
+        private string _displayValue;
+        private string _value;
+
+        public TextField()
+            : this(null, "[DEFAULT]", _ => true)
+        {
+        }
+
+        public TextField(string caption, string value, Func<string, bool> validator)
+        {
+            Caption = caption;
+            Validator = validator;
+            Value = value;
+        }
+
         public string Value
         {
             get { return _value; }
@@ -26,22 +42,6 @@
         }
 
         public Func<string, bool> Validator { get; set; }
-
-        private Label _label;
-        private string _displayValue;
-        private string _value;
-
-        public TextField()
-            : this(null, "[DEFAULT]", _ => true)
-        {
-        }
-
-        public TextField(string caption, string value, Func<string, bool> validator)
-        {
-            Caption = caption;
-            Validator = validator;
-            Value = value;
-        }
 
         public override void Draw()
         {

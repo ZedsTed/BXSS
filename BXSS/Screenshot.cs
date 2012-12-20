@@ -74,6 +74,4 @@ public class Screenshot
             _stopwatch.Reset();
         }
     }
-
-
 }

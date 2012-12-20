@@ -20,6 +20,7 @@ public class BXSSBehaviour : MonoBehaviour
 
     private BXSSSettings _settings;
     private Screenshot _screenshot;
+    private BXSSMainWindow _mainWindow;
 
     public void Awake()
     {
@@ -32,22 +33,19 @@ public class BXSSBehaviour : MonoBehaviour
         _mainWindow = new BXSSMainWindow(_settings, _screenshot);
     }
 
-    private BXSSMainWindow _mainWindow;
-
-    private void OnGUI()
-    {
-        _mainWindow.Draw();
-    }
-
     public void Update()
     {
         _screenshot.Update();
 
         if (Input.GetKeyDown(_settings.ScreenshotKey))
             _screenshot.Capture(_settings.SupersampleAmount, _settings.AutoHideUI, _settings.AutoHideUIDelayInMilliseconds);
-        
 
         if (Input.GetKeyDown(_settings.DisplayKey))
             _mainWindow.Visible = !_mainWindow.Visible;
+    }
+
+    private void OnGUI()
+    {
+        _mainWindow.Draw();
     }
 }

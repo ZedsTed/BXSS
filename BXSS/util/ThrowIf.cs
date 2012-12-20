@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace util
+﻿namespace util
 {
+    using System;
+
     public static class ThrowIf
     {
         public static void Null<T>(T obj, string desc = null)

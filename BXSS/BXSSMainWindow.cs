@@ -94,11 +94,6 @@ class BXSSMainWindow : Window
         _collapsedLayoutOptions = new[]{ GUILayout.Width(120), GUILayout.Height(60) };
     }
 
-    private string GetCollapsedButtonString()
-    {
-        return _collapsed ? "+" : "-";
-    }
-
     protected override void DrawCore()
     {
         Controls = _collapsed ? _collapsedControls : _expandedControls;
@@ -109,5 +104,10 @@ class BXSSMainWindow : Window
             _settings.WindowPosition = WindowPosition;
             _settings.Save();
         }
+    }
+
+    private string GetCollapsedButtonString()
+    {
+        return _collapsed ? "+" : "-";
     }
 }

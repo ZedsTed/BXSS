@@ -1,16 +1,10 @@
-﻿using System;
-using UnityEngine;
-
-namespace util
+﻿namespace util
 {
+    using System;
+    using UnityEngine;
+
     public class Toggle : AControl
     {
-        public bool Value { get; set; }
-
-        public string Caption { get; set; }
-
-        public Action<bool> OnToggled { get; set; }
-
         public Toggle()
             : this("[DEFAULT]", false, null)
         {
@@ -22,6 +16,10 @@ namespace util
             Value = value;
             OnToggled = onToggled;
         }
+
+        public bool Value { get; set; }
+        public string Caption { get; set; }
+        public Action<bool> OnToggled { get; set; }
 
         public override void Draw()
         {

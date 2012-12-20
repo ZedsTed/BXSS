@@ -7,7 +7,6 @@
     public abstract class PluginSettings<TPluginType>
     {
         private readonly PluginConfiguration _kspPluginConfiguration;
-
         private readonly MethodInfo _getValueMethod;
 
         protected PluginSettings()
