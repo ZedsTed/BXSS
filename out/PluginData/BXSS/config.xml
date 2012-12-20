@@ -6,7 +6,9 @@
         <ymin>0</ymin>
         <ymax>0</ymax>
     </rect>
-    <int name="SupersampleAmount">1</int>
+    <int name="SupersampleAmount">2</int>
     <string name="ScreenshotKey">z</string>
     <string name="DisplayKey">f11</string>
+    <bool name="AutoHideUI">0</bool>
+    <int name="AutoHideUIDelayInMilliseconds">10</int>
 </config>

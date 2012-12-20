@@ -11,6 +11,8 @@ public class BXSSSettings : util.PluginSettings<BXSS>
 
     public Rect WindowPosition { get; set; }
     public int SupersampleAmount { get; set; }
+    public bool AutoHideUI { get; set; }
+    public int AutoHideUIDelayInMilliseconds { get; set; }
 
     public string ScreenshotKey { get; set; }
     public string DisplayKey { get; set; }
@@ -19,6 +21,9 @@ public class BXSSSettings : util.PluginSettings<BXSS>
     {
         if (SupersampleAmount <= 0)
             SupersampleAmount = 1;
+
+        if (AutoHideUIDelayInMilliseconds < 0)
+            AutoHideUIDelayInMilliseconds = 0;
 
         if (string.IsNullOrEmpty(ScreenshotKey))
             ScreenshotKey = "z";

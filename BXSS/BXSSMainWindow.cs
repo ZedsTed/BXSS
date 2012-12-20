@@ -43,6 +43,7 @@ class BXSSMainWindow : Window
                                    };
         var setButton = new SetButton
                             {
+                                LayoutOptions = new[] {GUILayout.Height(25)},
                                 SettableObjects = new List<ISettable> {superSampleField},
                                 Clicked = () =>
                                               {
@@ -53,7 +54,18 @@ class BXSSMainWindow : Window
                                                   }
                                               }
                             };
-        var screenshotButton = new Button {Text = "Screenshot", Clicked = () => _screenshot.Capture(_settings.SupersampleAmount), LayoutOptions = new[] {GUILayout.Width(85)}};
+        var screenshotButton = new Button {Text = "Screenshot", Clicked = () => _screenshot.Capture(_settings.SupersampleAmount, _settings.AutoHideUI, _settings.AutoHideUIDelayInMilliseconds), LayoutOptions = new[] {GUILayout.Width(85)}};
+
+        var toggleAutoHideUI = new Toggle
+                                   {
+                                       Caption = "Autohide UI",
+                                       Value = _settings.AutoHideUI,
+                                       OnToggled = x =>
+                                                       {
+                                                           _settings.AutoHideUI = x;
+                                                           _settings.Save();
+                                                       }
+                                   };
 
         _expandedControls = new List<AControl>
                        {
@@ -62,8 +74,11 @@ class BXSSMainWindow : Window
                            screenshotButton,
                            expandButton,
                            new EndHorizontal(),
+                           toggleAutoHideUI,
+                           new BeginHorizontal(),
                            superSampleField,
                            setButton,
+                           new EndHorizontal(),
                            new EndVertical()
                        };
 

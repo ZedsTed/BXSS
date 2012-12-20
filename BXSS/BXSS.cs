@@ -28,7 +28,7 @@ public class BXSSBehaviour : MonoBehaviour
         _settings = new BXSSSettings();
         _settings.Load();
 
-        _screenshot = new Screenshot(KSPUtil.ApplicationRootPath + "PluginData/BXSS/");
+        _screenshot = new Screenshot(KSPUtil.ApplicationRootPath + "PluginData/BXSS/", () => _mainWindow.Visible = false, () => _mainWindow.Visible = true);
         _mainWindow = new BXSSMainWindow(_settings, _screenshot);
     }
 
@@ -41,8 +41,10 @@ public class BXSSBehaviour : MonoBehaviour
 
     public void Update()
     {
+        _screenshot.Update();
+
         if (Input.GetKeyDown(_settings.ScreenshotKey))
-            _screenshot.Capture(_settings.SupersampleAmount);
+            _screenshot.Capture(_settings.SupersampleAmount, _settings.AutoHideUI, _settings.AutoHideUIDelayInMilliseconds);
         
 
         if (Input.GetKeyDown(_settings.DisplayKey))

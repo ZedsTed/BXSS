@@ -10,7 +10,7 @@
         public Action Clicked { get; set; }
 
         public Button()
-            : this("[DEFAULT]", () => {})
+            : this("[DEFAULT]", null)
         {
         }
 
@@ -23,7 +23,8 @@
         public override void Draw()
         {
             if (GUILayout.Button(Text, LayoutOptions))
-                Clicked();
+                if(Clicked != null)
+                    Clicked();
         }
     }
 }
