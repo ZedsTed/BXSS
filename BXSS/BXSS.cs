@@ -10,7 +10,7 @@ public class BXSS : PartModule
     public override void OnAwake()
     {
         if (BXSSBehaviour.BXSSBehaviourInstance == null)
-            BXSSBehaviour.BXSSBehaviourInstance = GameObject.Find("BOSS") ?? new GameObject("BOSS", typeof(BXSSBehaviour));
+            BXSSBehaviour.BXSSBehaviourInstance = GameObject.Find("BXSS") ?? new GameObject("BXSS", typeof(BXSSBehaviour));
     }
 }
 
