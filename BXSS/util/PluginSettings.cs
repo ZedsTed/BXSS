@@ -18,10 +18,9 @@
 
         public void Load()
         {
+            _kspPluginConfiguration.load();
             foreach (var x in GetType().GetProperties())
             {
-                _kspPluginConfiguration.load();
-
                 var getValueMethodGeneric = _getValueMethod.MakeGenericMethod(new[] {x.PropertyType});
                 x.GetSetMethod().Invoke(this, new[] {getValueMethodGeneric.Invoke(_kspPluginConfiguration, new[] {x.Name, x.GetGetMethod().Invoke(this, null)})});
             }
