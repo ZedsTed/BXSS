@@ -52,7 +52,6 @@ public class Screenshot
 
             if (_disableUI != null)
                 _disableUI();
-            RenderingManager.ShowUI(false);
         }
 
     var fileName = _screenshotDir + _timestamp + "_" + _screenshotCount++ + ".png";
@@ -70,7 +69,6 @@ public class Screenshot
             if (_enableUI != null)
                 _enableUI();
 
-            RenderingManager.ShowUI(true);
             _stopwatch.Reset();
         }
     }

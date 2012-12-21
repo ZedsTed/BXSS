@@ -18,30 +18,18 @@ public class BXSSBehaviour : MonoBehaviour
 {
     public static GameObject BXSSBehaviourInstance;
 
-    private BXSSSettings _settings;
-    private Screenshot _screenshot;
     private BXSSMainWindow _mainWindow;
 
     public void Awake()
     {
         DontDestroyOnLoad(this);
 
-        _settings = new BXSSSettings();
-        _settings.Load();
-
-        _screenshot = new Screenshot(KSPUtil.ApplicationRootPath + "PluginData/BXSS/", () => _mainWindow.Visible = false, () => _mainWindow.Visible = true);
-        _mainWindow = new BXSSMainWindow(_settings, _screenshot);
+        _mainWindow = new BXSSMainWindow();
     }
 
     public void Update()
     {
-        _screenshot.Update();
-
-        if (Input.GetKeyDown(_settings.ScreenshotKey))
-            _screenshot.Capture(_settings.SupersampleAmount, _settings.AutoHideUI, _settings.AutoHideUIDelayInMilliseconds);
-
-        if (Input.GetKeyDown(_settings.DisplayKey))
-            _mainWindow.Visible = !_mainWindow.Visible;
+        _mainWindow.OnUpdate();
     }
 
     private void OnGUI()

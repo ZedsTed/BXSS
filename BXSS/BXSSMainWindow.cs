@@ -15,17 +15,31 @@ class BXSSMainWindow : Window
     private readonly GUILayoutOption[] _expandedLayoutOptions;
 
     private bool _collapsed;
+    private bool _mainGuiEnabled;
 
-    public BXSSMainWindow(BXSSSettings settings, Screenshot screenshot)
+    public BXSSMainWindow()
     {
-        ThrowIf.Null(settings, "settings");
-        ThrowIf.Null(screenshot, "screenshot");
+        _settings = new BXSSSettings();
+        _settings.Load();
+        _screenshot = new Screenshot(
+            KSPUtil.ApplicationRootPath + "PluginData/BXSS/",
+            () =>
+                {
+                    Visible = false;
+                    if(_mainGuiEnabled)
+                        RenderingManager.ShowUI(false);
+                }, 
+            () =>
+                {
+                    Visible = true;
+                    if(_mainGuiEnabled)
+                        RenderingManager.ShowUI(true);
+                });
 
-        _settings = settings;
-        _screenshot = screenshot;
         _collapsed = true;
+        _mainGuiEnabled = true;
 
-        WindowPosition = settings.WindowPosition;
+        WindowPosition = _settings.WindowPosition;
 
         Caption = "B.X.S.S";
 
@@ -33,7 +47,7 @@ class BXSSMainWindow : Window
         expandButton.Clicked = () => { _collapsed = !_collapsed; expandButton.Text = GetCollapsedButtonString(); };
         var superSampleField = new TextField
                                    {
-                                       Value = settings.SupersampleAmount.ToString(CultureInfo.InvariantCulture),
+                                       Value = _settings.SupersampleAmount.ToString(CultureInfo.InvariantCulture),
                                        Caption = "Supersample: ",
                                        Validator = x =>
                                                        {
@@ -47,10 +61,10 @@ class BXSSMainWindow : Window
                                 SettableObjects = new List<ISettable> {superSampleField},
                                 Clicked = () =>
                                               {
-                                                  if (settings.SupersampleAmount != int.Parse(superSampleField.Value))
+                                                  if (_settings.SupersampleAmount != int.Parse(superSampleField.Value))
                                                   {
-                                                      settings.SupersampleAmount = int.Parse(superSampleField.Value);
-                                                      settings.Save();
+                                                      _settings.SupersampleAmount = int.Parse(superSampleField.Value);
+                                                      _settings.Save();
                                                   }
                                               }
                             };
@@ -92,6 +106,21 @@ class BXSSMainWindow : Window
 
         _expandedLayoutOptions = new[] {GUILayout.Width(180), GUILayout.ExpandHeight(true)};
         _collapsedLayoutOptions = new[]{ GUILayout.Width(120), GUILayout.Height(60) };
+    }
+
+    public void OnUpdate()
+    {
+        _screenshot.Update();
+
+        if (Input.GetKeyDown(_settings.ScreenshotKey))
+            _screenshot.Capture(_settings.SupersampleAmount, _settings.AutoHideUI, _settings.AutoHideUIDelayInMilliseconds);
+
+        if (Input.GetKeyDown(_settings.DisplayKey))
+            Visible = !Visible;
+
+        if (FlightGlobals.fetch != null && FlightGlobals.ActiveVessel != null)
+            if (Input.GetKeyDown(KeyCode.F2))
+                _mainGuiEnabled = !_mainGuiEnabled;
     }
 
     protected override void DrawCore()
