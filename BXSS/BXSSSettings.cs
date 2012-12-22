@@ -14,6 +14,8 @@ public class BXSSSettings : util.PluginSettings<BXSS>
     public bool AutoHideUI { get; set; }
     public int AutoHideUIDelayInMilliseconds { get; set; }
 
+    public double AutoIntervalDelayInSeconds { get; set; }
+
     public KeyCode ScreenshotKey { get; set; }
     public KeyCode DisplayKey { get; set; }
 
@@ -24,5 +26,8 @@ public class BXSSSettings : util.PluginSettings<BXSS>
 
         if (AutoHideUIDelayInMilliseconds < 0)
             AutoHideUIDelayInMilliseconds = 0;
+
+        if (AutoIntervalDelayInSeconds <= 0)
+            AutoIntervalDelayInSeconds = 0.1;
     }
 }

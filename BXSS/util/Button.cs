@@ -19,7 +19,7 @@
         public string Text { get; set; }
         public Action Clicked { get; set; }
 
-        public override void Draw()
+        protected override void DrawCore()
         {
             if (GUILayout.Button(Text, LayoutOptions))
                 if(Clicked != null)

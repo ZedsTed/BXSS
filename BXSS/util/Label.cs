@@ -16,7 +16,7 @@
 
         public string Text { get; set; }
 
-        public override void Draw()
+        protected override void DrawCore()
         {
             BeforeDraw();
             GUILayout.Label(Text ?? "[NULL]", LayoutOptions);

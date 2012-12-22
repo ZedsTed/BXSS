@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using UnityEngine;
 using util;
@@ -17,6 +19,9 @@ class BXSSMainWindow : Window
     private bool _collapsed;
     private bool _mainUIEnabled;
     private bool _prevUIState;
+    private bool _autoIntervalEnabled;
+
+    private Stopwatch _autoIntervalStopwatch;
 
     public BXSSMainWindow()
     {
@@ -40,6 +45,9 @@ class BXSSMainWindow : Window
 
         _collapsed = true;
         _mainUIEnabled = true;
+        _autoIntervalEnabled = false;
+
+        _autoIntervalStopwatch = new Stopwatch();
 
         WindowPosition = _settings.WindowPosition;
 
@@ -47,7 +55,7 @@ class BXSSMainWindow : Window
 
         var expandButton = new Button {Text = GetCollapsedButtonString(), LayoutOptions = new[] {GUILayout.Width(30)}};
         expandButton.Clicked = () => { _collapsed = !_collapsed; expandButton.Text = GetCollapsedButtonString(); };
-        var superSampleField = new TextField
+        var supersampleAmount = new TextField
                                    {
                                        Value = _settings.SupersampleAmount.ToString(CultureInfo.InvariantCulture),
                                        Caption = "Supersample: ",
@@ -57,24 +65,16 @@ class BXSSMainWindow : Window
                                                            return int.TryParse(x, out val) && val > 0;
                                                        }
                                    };
-        var setButton = new SetButton
-                            {
-                                LayoutOptions = new[] {GUILayout.Height(25)},
-                                SettableObjects = new List<ISettable> {superSampleField},
-                                Clicked = () =>
-                                              {
-                                                  if (_settings.SupersampleAmount != int.Parse(superSampleField.Value))
-                                                  {
-                                                      _settings.SupersampleAmount = int.Parse(superSampleField.Value);
-                                                      _settings.Save();
-                                                  }
-                                              }
-                            };
-        var screenshotButton = new Button {Text = "Screenshot", Clicked = () => _screenshot.Capture(_settings.SupersampleAmount, _settings.AutoHideUI, _settings.AutoHideUIDelayInMilliseconds), LayoutOptions = new[] {GUILayout.Width(85)}};
+        var screenshotButton = new Button
+                                   {
+                                       Text = "Screenshot",
+                                       LayoutOptions = new[] {GUILayout.Width(85)},
+                                       Clicked = () => Screenshot()
+                                   };
 
         var toggleAutoHideUI = new Toggle
                                    {
-                                       Caption = "Autohide UI",
+                                       Caption = "Autohide UI: ",
                                        Value = _settings.AutoHideUI,
                                        OnToggled = x =>
                                                        {
@@ -82,6 +82,41 @@ class BXSSMainWindow : Window
                                                            _settings.Save();
                                                        }
                                    };
+
+        var autoIntervalAmount = new TextField
+                                     {
+                                         Value = _settings.AutoIntervalDelayInSeconds.ToString(CultureInfo.InvariantCulture),
+                                         Visible = false,
+                                         Caption = "Auto Interval (s): ",
+                                         Validator = x =>
+                                                         {
+                                                             double val;
+                                                             return double.TryParse(x, out val) && val > 0.0;
+                                                         }
+                                     };
+
+        var toggleAutoInterval = new Toggle
+                                     {
+                                         Caption = "Auto Interval: ",
+                                         Value = _autoIntervalEnabled,
+                                         OnToggled = x =>
+                                                         {
+                                                             _autoIntervalEnabled = !_autoIntervalEnabled;
+                                                             autoIntervalAmount.Visible = _autoIntervalEnabled;
+                                                         }
+                                     };
+
+        var setButton = new SetButton
+        {
+            LayoutOptions = new[] { GUILayout.Height(25) },
+            SettableObjects = new List<ISettable> { supersampleAmount, autoIntervalAmount },
+            Clicked = () =>
+                          {
+                              _settings.SupersampleAmount = int.Parse(supersampleAmount.Value);
+                              _settings.AutoIntervalDelayInSeconds = double.Parse(autoIntervalAmount.Value);
+                              _settings.Save();
+                          }
+        };
 
         _expandedControls = new List<AControl>
                        {
@@ -91,10 +126,10 @@ class BXSSMainWindow : Window
                            expandButton,
                            new EndHorizontal(),
                            toggleAutoHideUI,
-                           new BeginHorizontal(),
-                           superSampleField,
+                           toggleAutoInterval,
+                           supersampleAmount,
+                           autoIntervalAmount,
                            setButton,
-                           new EndHorizontal(),
                            new EndVertical()
                        };
 
@@ -114,8 +149,19 @@ class BXSSMainWindow : Window
     {
         _screenshot.Update();
 
+        if (_autoIntervalEnabled)
+        {
+            if (_autoIntervalStopwatch.Elapsed > TimeSpan.FromSeconds(_settings.AutoIntervalDelayInSeconds))
+            {
+                _screenshot.Capture(_settings.SupersampleAmount, _settings.AutoHideUI, _settings.AutoHideUIDelayInMilliseconds);
+
+                _autoIntervalStopwatch.Reset();
+                _autoIntervalStopwatch.Start();
+            }
+        }
+
         if (Input.GetKeyDown(_settings.ScreenshotKey))
-            _screenshot.Capture(_settings.SupersampleAmount, _settings.AutoHideUI, _settings.AutoHideUIDelayInMilliseconds);
+            Screenshot();
 
         if (Input.GetKeyDown(_settings.DisplayKey))
             Visible = !Visible;
@@ -135,6 +181,19 @@ class BXSSMainWindow : Window
             _settings.WindowPosition = WindowPosition;
             _settings.Save();
         }
+    }
+
+    private void Screenshot()
+    {
+        if (_autoIntervalEnabled)
+        {
+            if (_autoIntervalStopwatch.IsRunning)
+                _autoIntervalStopwatch.Reset();
+            else
+                _autoIntervalStopwatch.Start();
+        }
+        else
+            _screenshot.Capture(_settings.SupersampleAmount, _settings.AutoHideUI, _settings.AutoHideUIDelayInMilliseconds);
     }
 
     private string GetCollapsedButtonString()

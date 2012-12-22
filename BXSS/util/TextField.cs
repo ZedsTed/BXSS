@@ -43,7 +43,7 @@
 
         public Func<string, bool> Validator { get; set; }
 
-        public override void Draw()
+        protected override void DrawCore()
         {
             GUILayout.BeginHorizontal();
 

@@ -4,7 +4,7 @@
 
     public class BeginHorizontal : AControl
     {
-        public override void Draw()
+        protected override void DrawCore()
         {
             GUILayout.BeginHorizontal();
         }
@@ -12,7 +12,7 @@
 
     public class EndHorizontal : AControl
     {
-        public override void Draw()
+        protected override void DrawCore()
         {
             GUILayout.EndHorizontal();
         }
@@ -20,7 +20,7 @@
 
     public class BeginVertical : AControl
     {
-        public override void Draw()
+        protected override void DrawCore()
         {
             GUILayout.BeginVertical();
         }
@@ -28,7 +28,7 @@
 
     public class EndVertical : AControl
     {
-        public override void Draw()
+        protected override void DrawCore()
         {
             GUILayout.EndVertical();
         }
