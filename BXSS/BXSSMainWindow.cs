@@ -15,7 +15,8 @@ class BXSSMainWindow : Window
     private readonly GUILayoutOption[] _expandedLayoutOptions;
 
     private bool _collapsed;
-    private bool _mainGuiEnabled;
+    private bool _mainUIEnabled;
+    private bool _prevUIState;
 
     public BXSSMainWindow()
     {
@@ -25,19 +26,20 @@ class BXSSMainWindow : Window
             KSPUtil.ApplicationRootPath + "PluginData/BXSS/",
             () =>
                 {
+                    _prevUIState = Visible;
                     Visible = false;
-                    if(_mainGuiEnabled)
+                    if(_mainUIEnabled)
                         RenderingManager.ShowUI(false);
                 }, 
             () =>
                 {
-                    Visible = true;
-                    if(_mainGuiEnabled)
+                    Visible = _prevUIState;
+                    if(_mainUIEnabled)
                         RenderingManager.ShowUI(true);
                 });
 
         _collapsed = true;
-        _mainGuiEnabled = true;
+        _mainUIEnabled = true;
 
         WindowPosition = _settings.WindowPosition;
 
@@ -120,7 +122,7 @@ class BXSSMainWindow : Window
 
         if (FlightGlobals.fetch != null && FlightGlobals.ActiveVessel != null)
             if (Input.GetKeyDown(KeyCode.F2))
-                _mainGuiEnabled = !_mainGuiEnabled;
+                _mainUIEnabled = !_mainUIEnabled;
     }
 
     protected override void DrawCore()
