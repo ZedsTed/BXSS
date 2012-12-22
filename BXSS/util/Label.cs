@@ -14,7 +14,12 @@
             Text = text;
         }
 
-        public string Text { get; set; }
+        private string _text;
+        public string Text
+        {
+            get { return _text; }
+            set { ThrowIf.Null(value); _text = value; }
+        }
 
         protected override void DrawCore()
         {

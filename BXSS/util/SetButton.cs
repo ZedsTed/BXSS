@@ -20,14 +20,20 @@
 
         public new Action Clicked { get; set; }
 
-        public List<ISettable> SettableObjects { get; set; } 
+        private List<ISettable> _settableObjects;
+        public List<ISettable> SettableObjects
+        {
+            get { return _settableObjects; }
+            set { ThrowIf.Null(value); _settableObjects = value; }
+        }
 
         private void OnClick()
         {
             foreach (var settableObject in SettableObjects)
                 settableObject.Set();
 
-            Clicked();
+            if(Clicked != null)
+                Clicked();
         }
     }
 }

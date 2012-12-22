@@ -10,7 +10,12 @@
             Visible = true;
         }
 
-        public GUILayoutOption[] LayoutOptions { get; set; }
+        private GUILayoutOption[] _layoutOptions;
+        public GUILayoutOption[] LayoutOptions
+        {
+            get { return _layoutOptions; }
+            set { ThrowIf.Null(value); _layoutOptions = value; }
+        }
 
         public bool Visible { get; set; }
 

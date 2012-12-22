@@ -16,7 +16,13 @@
             Clicked = clicked;
         }
 
-        public string Text { get; set; }
+        private string _text;
+        public string Text
+        {
+            get { return _text; }
+            set { ThrowIf.Null(value); _text = value; }
+        }
+
         public Action Clicked { get; set; }
 
         protected override void DrawCore()

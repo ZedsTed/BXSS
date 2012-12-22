@@ -32,14 +32,25 @@
             LayoutOptions = new[] { GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true) };
         }
 
-        public string Caption { get; set; }
+        protected string Caption { get; set; }
+
         public Rect WindowPosition { get; set; }
         public bool Visible { get; set; }
         public bool Draggable { get; set; }
 
-        public List<AControl> Controls { get; set; }
+        private List<AControl> _controls; 
+        public List<AControl> Controls
+        {
+            get { return _controls; }
+            set { ThrowIf.Null(value); _controls = value; }
+        }
 
-        protected GUILayoutOption[] LayoutOptions { get; set; }
+        private GUILayoutOption[] _layoutOptions;
+        protected GUILayoutOption[] LayoutOptions
+        {
+            get { return _layoutOptions; }
+            set { ThrowIf.Null(value); _layoutOptions = value; }
+        }
 
         public void Draw()
         {

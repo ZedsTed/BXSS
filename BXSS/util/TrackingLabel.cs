@@ -12,7 +12,12 @@
             TrackedControl = trackedControl;
         }
 
-        public ISettable TrackedControl { get; set; }
+        private ISettable _trackedControl;
+        public ISettable TrackedControl
+        {
+            get { return _trackedControl; }
+            set { ThrowIf.Null(value); _trackedControl = value; }
+        }
 
         protected override void BeforeDraw()
         {
