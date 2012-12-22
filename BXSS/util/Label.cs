@@ -14,17 +14,12 @@
             Text = text;
         }
 
-        private string _text;
-        public string Text
-        {
-            get { return _text; }
-            set { ThrowIf.Null(value); _text = value; }
-        }
+        public string Text { get; set; }
 
         protected override void DrawCore()
         {
             BeforeDraw();
-            GUILayout.Label(Text ?? "[NULL]", LayoutOptions);
+            GUILayout.Label(Text ?? "", LayoutOptions);
         }
 
         protected virtual void BeforeDraw()

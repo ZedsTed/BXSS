@@ -13,8 +13,7 @@ public class BXSSSettings : util.PluginSettings<BXSS>
     public int SupersampleAmount { get; set; }
     public bool AutoHideUI { get; set; }
     public int AutoHideUIDelayInMilliseconds { get; set; }
-
-    public double AutoIntervalDelayInSeconds { get; set; }
+    public int AutoIntervalDelayInSeconds { get; set; }
 
     public KeyCode ScreenshotKey { get; set; }
     public KeyCode DisplayKey { get; set; }
@@ -28,6 +27,6 @@ public class BXSSSettings : util.PluginSettings<BXSS>
             AutoHideUIDelayInMilliseconds = 0;
 
         if (AutoIntervalDelayInSeconds <= 0)
-            AutoIntervalDelayInSeconds = 0.1;
+            AutoIntervalDelayInSeconds = 1;
     }
 }

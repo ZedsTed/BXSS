@@ -1,28 +1,31 @@
-﻿namespace util
+﻿using System.Globalization;
+
+namespace util
 {
     using System;
     using UnityEngine;
 
     // TODO: Add generic argument for value type
-    public class TextField : AControl, ISettable
+    public class TextField<T> : AControl, ISettable
+        where T : IConvertible
     {
         private Label _label;
         private string _displayValue;
-        private string _value;
+        private T _value;
 
         public TextField()
-            : this(null, "[DEFAULT]", _ => true)
+            : this(null, default(T), _ => true)
         {
         }
 
-        public TextField(string caption, string value, Func<string, bool> validator)
+        public TextField(string caption, T value, Func<T, bool> validator)
         {
             Caption = caption;
             Validator = validator;
             Value = value;
         }
 
-        public string Value
+        public T Value
         {
             get { return _value; }
             set
@@ -30,7 +33,7 @@
                 if (Validator(value))
                 {
                     _value = value;
-                    _displayValue = _value;
+                    _displayValue = _value.ToString(CultureInfo.InvariantCulture);
                 }
             }
         }
@@ -41,7 +44,7 @@
             set { _label = new Label(value); }
         }
 
-        public Func<string, bool> Validator { get; set; }
+        public Func<T, bool> Validator { get; set; }
 
         protected override void DrawCore()
         {
@@ -57,18 +60,29 @@
 
         public void Set()
         {
-            if (Validator != null)
+            T newValue;
+            try
             {
-                if (Validator(_displayValue))
-                    Value = _displayValue;
+                newValue = TypeConvert.Convert<T>(_displayValue);
+            }
+            catch (NotSupportedException)
+            {
+                _displayValue = Value.ToString(CultureInfo.InvariantCulture);
+                return;
             }
 
-            _displayValue = Value;
+            if (Validator != null)
+            {
+                if (Validator(newValue))
+                    Value = newValue;
+            }
+            else
+                _displayValue = Value.ToString(CultureInfo.InvariantCulture);
         }
 
         public string Get()
         {
-            return Value;
+            return Value.ToString(CultureInfo.InvariantCulture);
         }
     }
 }

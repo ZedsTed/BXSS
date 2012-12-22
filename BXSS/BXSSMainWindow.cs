@@ -10,18 +10,18 @@ class BXSSMainWindow : Window
     private readonly BXSSSettings _settings;
     private readonly Screenshot _screenshot;
 
-    private readonly List<AControl> _collapsedControls;
-    private readonly List<AControl> _expandedControls;
+    private List<AControl> _collapsedControls;
+    private List<AControl> _expandedControls;
 
-    private readonly GUILayoutOption[] _collapsedLayoutOptions;
-    private readonly GUILayoutOption[] _expandedLayoutOptions;
+    private GUILayoutOption[] _collapsedLayoutOptions;
+    private GUILayoutOption[] _expandedLayoutOptions;
 
     private bool _collapsed;
     private bool _mainUIEnabled;
     private bool _prevUIState;
     private bool _autoIntervalEnabled;
 
-    private Stopwatch _autoIntervalStopwatch;
+    private readonly Stopwatch _autoIntervalStopwatch;
 
     public BXSSMainWindow()
     {
@@ -53,18 +53,23 @@ class BXSSMainWindow : Window
 
         Caption = "B.X.S.S";
 
+        SetupControls();
+    }
+
+    private void SetupControls()
+    {
         var expandButton = new Button {Text = GetCollapsedButtonString(), LayoutOptions = new[] {GUILayout.Width(30)}};
-        expandButton.Clicked = () => { _collapsed = !_collapsed; expandButton.Text = GetCollapsedButtonString(); };
-        var supersampleAmount = new TextField
+        expandButton.Clicked = () =>
                                    {
-                                       Value = _settings.SupersampleAmount.ToString(CultureInfo.InvariantCulture),
-                                       Caption = "Supersample: ",
-                                       Validator = x =>
-                                                       {
-                                                           int val;
-                                                           return int.TryParse(x, out val) && val > 0;
-                                                       }
+                                       _collapsed = !_collapsed;
+                                       expandButton.Text = GetCollapsedButtonString();
                                    };
+        var supersampleAmount = new TextField<int>
+                                    {
+                                        Value = _settings.SupersampleAmount,
+                                        Caption = "Supersample: ",
+                                        Validator = x => x > 0
+                                    };
         var screenshotButton = new Button
                                    {
                                        Text = "Screenshot",
@@ -83,16 +88,12 @@ class BXSSMainWindow : Window
                                                        }
                                    };
 
-        var autoIntervalAmount = new TextField
+        var autoIntervalAmount = new TextField<int>
                                      {
-                                         Value = _settings.AutoIntervalDelayInSeconds.ToString(CultureInfo.InvariantCulture),
+                                         Value = _settings.AutoIntervalDelayInSeconds,
                                          Visible = false,
                                          Caption = "Auto Interval (s): ",
-                                         Validator = x =>
-                                                         {
-                                                             double val;
-                                                             return double.TryParse(x, out val) && val > 0.0;
-                                                         }
+                                         Validator = x => x > 0
                                      };
 
         var toggleAutoInterval = new Toggle
@@ -107,31 +108,31 @@ class BXSSMainWindow : Window
                                      };
 
         var setButton = new SetButton
-        {
-            LayoutOptions = new[] { GUILayout.Height(25) },
-            SettableObjects = new List<ISettable> { supersampleAmount, autoIntervalAmount },
-            Clicked = () =>
-                          {
-                              _settings.SupersampleAmount = int.Parse(supersampleAmount.Value);
-                              _settings.AutoIntervalDelayInSeconds = double.Parse(autoIntervalAmount.Value);
-                              _settings.Save();
-                          }
-        };
+                            {
+                                LayoutOptions = new[] {GUILayout.Height(25)},
+                                SettableObjects = new List<ISettable> {supersampleAmount, autoIntervalAmount},
+                                Clicked = () =>
+                                              {
+                                                  _settings.SupersampleAmount = supersampleAmount.Value;
+                                                  _settings.AutoIntervalDelayInSeconds = autoIntervalAmount.Value;
+                                                  _settings.Save();
+                                              }
+                            };
 
         _expandedControls = new List<AControl>
-                       {
-                           new BeginVertical(),
-                           new BeginHorizontal(),
-                           screenshotButton,
-                           expandButton,
-                           new EndHorizontal(),
-                           toggleAutoHideUI,
-                           toggleAutoInterval,
-                           supersampleAmount,
-                           autoIntervalAmount,
-                           setButton,
-                           new EndVertical()
-                       };
+                                {
+                                    new BeginVertical(),
+                                    new BeginHorizontal(),
+                                    screenshotButton,
+                                    expandButton,
+                                    new EndHorizontal(),
+                                    toggleAutoHideUI,
+                                    toggleAutoInterval,
+                                    supersampleAmount,
+                                    autoIntervalAmount,
+                                    setButton,
+                                    new EndVertical()
+                                };
 
         _collapsedControls = new List<AControl>
                                  {
@@ -142,7 +143,7 @@ class BXSSMainWindow : Window
                                  };
 
         _expandedLayoutOptions = new[] {GUILayout.Width(180), GUILayout.ExpandHeight(true)};
-        _collapsedLayoutOptions = new[]{ GUILayout.Width(120), GUILayout.Height(60) };
+        _collapsedLayoutOptions = new[] {GUILayout.Width(120), GUILayout.Height(60)};
     }
 
     public void OnUpdate()
