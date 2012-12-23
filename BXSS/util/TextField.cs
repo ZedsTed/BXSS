@@ -30,11 +30,19 @@ namespace util
             get { return _value; }
             set
             {
-                if (Validator(value))
+                if (Validator != null)
+                {
+                    if (Validator(value))
+                    {
+                        _value = value;
+                    }
+                }
+                else
                 {
                     _value = value;
-                    _displayValue = _value.ToString(CultureInfo.InvariantCulture);
                 }
+
+                _displayValue = _value.ToString(CultureInfo.InvariantCulture);
             }
         }
 
@@ -60,7 +68,6 @@ namespace util
 
         public void Set()
         {
-            Action onNotValidated = () => _displayValue = Value.ToString(CultureInfo.InvariantCulture);
             T newValue;
             try
             {
@@ -70,23 +77,14 @@ namespace util
             {
                 if (e.InnerException is FormatException || e.InnerException is NotSupportedException)
                 {
-                    onNotValidated();
+                    _displayValue = Value.ToString(CultureInfo.InvariantCulture);
                     return;
                 }
 
                 throw;
             }
 
-            if (Validator != null)
-            {
-                if (Validator(newValue))
-                {
-                    Value = newValue;
-                    return;
-                }
-            }
-
-            onNotValidated();
+            Value = newValue;
         }
 
         public string Get()
