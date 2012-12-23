@@ -5,7 +5,7 @@
     public class Label : AControl
     {
         public Label()
-            : this("[DEFAULT]")
+            : this("")
         {
         }
 

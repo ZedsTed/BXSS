@@ -4,9 +4,24 @@
 
     public class BeginHorizontal : AControl
     {
+        private readonly bool _guiGroup;
+
+        public BeginHorizontal()
+            : this(false)
+        {
+        }
+
+        public BeginHorizontal(bool guiGroup)
+        {
+            _guiGroup = guiGroup;
+        }
+
         protected override void DrawCore()
         {
-            GUILayout.BeginHorizontal();
+            if(_guiGroup)
+                GUILayout.BeginHorizontal(GUI.skin.textArea);
+            else
+                GUILayout.BeginHorizontal();
         }
     }
 
@@ -20,9 +35,24 @@
 
     public class BeginVertical : AControl
     {
+        private readonly bool _guiGroup;
+
+        public BeginVertical()
+            : this(false)
+        {
+        }
+
+        public BeginVertical(bool guiGroup)
+        {
+            _guiGroup = guiGroup;
+        }
+
         protected override void DrawCore()
         {
-            GUILayout.BeginVertical();
+            if(_guiGroup)
+                GUILayout.BeginVertical(GUI.skin.textArea);
+            else
+                GUILayout.BeginVertical();
         }
     }
 
@@ -34,3 +64,4 @@
         }
     }
 }
+/*GUI.skin.textArea*/

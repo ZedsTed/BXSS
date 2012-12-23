@@ -3,42 +3,31 @@
     using System;
     using UnityEngine;
 
-    public class Toggle : AControl
+    public class ToggleButton : AControl
     {
         private Label _label;
 
-        public Toggle()
+        public ToggleButton()
             : this("", false, null)
         {
         }
 
-        public Toggle(string caption, bool value, Action<bool> onToggled)
+        public ToggleButton(string caption, bool value, Action<bool> onToggled)
         {
             Caption = caption;
             Value = value;
             OnToggled = onToggled;
         }
 
-        public string Caption
-        {
-            get { return _label != null ? _label.Text : null; }
-            set { _label = new Label(value); }
-        }
+        public string Caption { get; set; }
 
         public bool Value { get; set; }
         public Action<bool> OnToggled { get; set; }
 
         protected override void DrawCore()
         {
-            GUILayout.BeginHorizontal();
-
-            if(!string.IsNullOrEmpty(Caption))
-                _label.Draw();
-
             var oldValue = Value;
-            Value = GUILayout.Toggle(Value, GUIContent.none, LayoutOptions);
-
-            GUILayout.EndHorizontal();
+            Value = GUILayout.Toggle(Value, Caption ?? "", GUI.skin.button, LayoutOptions);
 
             if (oldValue != Value)
                 if (OnToggled != null)

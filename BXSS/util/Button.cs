@@ -6,7 +6,7 @@
     public class Button : AControl
     {
         public Button()
-            : this("[DEFAULT]", null)
+            : this("", null)
         {
         }
 

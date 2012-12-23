@@ -19,9 +19,11 @@ class BXSSMainWindow : Window
     private bool _collapsed;
     private bool _mainUIEnabled;
     private bool _prevUIState;
-    private bool _autoIntervalEnabled;
 
+    private bool _autoIntervalEnabled;
     private readonly Stopwatch _autoIntervalStopwatch;
+
+    private ToggleButton _screenshotToggle;
 
     public BXSSMainWindow()
     {
@@ -67,7 +69,7 @@ class BXSSMainWindow : Window
         var supersampleAmount = new TextField<int>
                                     {
                                         Value = _settings.SupersampleAmount,
-                                        Caption = "Supersample: ",
+                                        Caption = "    Supersample: ",
                                         Validator = x => x > 0
                                     };
         var screenshotButton = new Button
@@ -76,10 +78,17 @@ class BXSSMainWindow : Window
                                        LayoutOptions = new[] {GUILayout.Width(85)},
                                        Clicked = () => Screenshot()
                                    };
+        _screenshotToggle = new ToggleButton
+                                   {
+                                       Caption = "Screenshot",
+                                       Visible = false,
+                                       LayoutOptions = new[] {GUILayout.Width(85)},
+                                       OnToggled = x => Screenshot()
+                                   };
 
         var toggleAutoHideUI = new Toggle
                                    {
-                                       Caption = "Autohide UI: ",
+                                       Caption = "             Autohide UI: ",
                                        Value = _settings.AutoHideUI,
                                        OnToggled = x =>
                                                        {
@@ -91,19 +100,26 @@ class BXSSMainWindow : Window
         var autoIntervalAmount = new TextField<int>
                                      {
                                          Value = _settings.AutoIntervalDelayInSeconds,
-                                         Visible = false,
-                                         Caption = "Auto Interval (s): ",
+                                         Caption = "               Interval: ",
                                          Validator = x => x > 0
                                      };
 
         var toggleAutoInterval = new Toggle
                                      {
-                                         Caption = "Auto Interval: ",
+                                         Caption = "           Auto Interval: ",
                                          Value = _autoIntervalEnabled,
                                          OnToggled = x =>
                                                          {
-                                                             _autoIntervalEnabled = !_autoIntervalEnabled;
-                                                             autoIntervalAmount.Visible = _autoIntervalEnabled;
+                                                             _autoIntervalEnabled = x;
+
+                                                             screenshotButton.Visible = !x;
+                                                             _screenshotToggle.Visible = x;
+
+                                                             if (!x)
+                                                             {
+                                                                 _screenshotToggle.Value = false;
+                                                                 _autoIntervalStopwatch.Reset();
+                                                             }
                                                          }
                                      };
 
@@ -124,13 +140,16 @@ class BXSSMainWindow : Window
                                     new BeginVertical(),
                                     new BeginHorizontal(),
                                     screenshotButton,
+                                    _screenshotToggle,
                                     expandButton,
                                     new EndHorizontal(),
                                     toggleAutoHideUI,
                                     toggleAutoInterval,
+                                    new BeginVertical(true),
                                     supersampleAmount,
                                     autoIntervalAmount,
                                     setButton,
+                                    new EndVertical(),
                                     new EndVertical()
                                 };
 
@@ -145,6 +164,8 @@ class BXSSMainWindow : Window
         _expandedLayoutOptions = new[] {GUILayout.Width(180), GUILayout.ExpandHeight(true)};
         _collapsedLayoutOptions = new[] {GUILayout.Width(120), GUILayout.Height(60)};
     }
+
+
 
     public void OnUpdate()
     {
@@ -189,9 +210,15 @@ class BXSSMainWindow : Window
         if (_autoIntervalEnabled)
         {
             if (_autoIntervalStopwatch.IsRunning)
+            {
+                _screenshotToggle.Value = false;
                 _autoIntervalStopwatch.Reset();
+            }
             else
+            {
+                _screenshotToggle.Value = true;
                 _autoIntervalStopwatch.Start();
+            }
         }
         else
             _screenshot.Capture(_settings.SupersampleAmount, _settings.AutoHideUI, _settings.AutoHideUIDelayInMilliseconds);

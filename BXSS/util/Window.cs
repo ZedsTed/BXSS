@@ -23,7 +23,7 @@
         {
             _windowID = GetNextWindowID();
 
-            Caption = "[DEFAULT]";
+            Caption = "";
             Visible = true;
             Draggable = true;
 

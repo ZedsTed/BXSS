@@ -60,6 +60,7 @@
     <Compile Include="util\TextField.cs" />
     <Compile Include="util\ThrowIf.cs" />
     <Compile Include="util\Toggle.cs" />
+    <Compile Include="util\ToggleButton.cs" />
     <Compile Include="util\TrackingLabel.cs" />
     <Compile Include="util\TypeConvert.cs" />
     <Compile Include="util\Window.cs" />
