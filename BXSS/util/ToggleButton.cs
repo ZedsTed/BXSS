@@ -5,8 +5,6 @@
 
     public class ToggleButton : AControl
     {
-        private Label _label;
-
         public ToggleButton()
             : this("", false, null)
         {

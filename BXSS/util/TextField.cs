@@ -60,24 +60,33 @@ namespace util
 
         public void Set()
         {
+            Action onNotValidated = () => _displayValue = Value.ToString(CultureInfo.InvariantCulture);
             T newValue;
             try
             {
                 newValue = TypeConvert.Convert<T>(_displayValue);
             }
-            catch (NotSupportedException)
+            catch (Exception e)
             {
-                _displayValue = Value.ToString(CultureInfo.InvariantCulture);
-                return;
+                if (e.InnerException is FormatException || e.InnerException is NotSupportedException)
+                {
+                    onNotValidated();
+                    return;
+                }
+
+                throw;
             }
 
             if (Validator != null)
             {
                 if (Validator(newValue))
+                {
                     Value = newValue;
+                    return;
+                }
             }
-            else
-                _displayValue = Value.ToString(CultureInfo.InvariantCulture);
+
+            onNotValidated();
         }
 
         public string Get()
