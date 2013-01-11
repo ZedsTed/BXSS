@@ -12,6 +12,9 @@
         protected PluginSettings()
         {
             _kspPluginConfiguration = PluginConfiguration.CreateForType<TPluginType>();
+
+            // NOTE: This is a hack. I should really check function signatures, etc. This is extremely painful on generic 
+            // functions, however, so I'm cheating here since there currently only exists one overload with 2 parameters :)
             _getValueMethod = typeof (PluginConfiguration).GetMethods()
                                                          .First(y => y.Name == "GetValue" && y.GetParameters().Count() == 2);
         }

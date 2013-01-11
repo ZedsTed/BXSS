@@ -12,4 +12,5 @@
     <bool name="AutoHideUI">1</bool>
     <int name="AutoHideUIDelayInMilliseconds">10</int>
     <int name="AutoIntervalDelayInSeconds">5</int>
+    <bool name="EnableOutsideFlight">1</bool>
 </config>

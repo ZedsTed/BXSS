@@ -52,7 +52,7 @@
             set { ThrowIf.Null(value); _layoutOptions = value; }
         }
 
-        public void Draw()
+        virtual public void Draw()
         {
             if (!Visible)
                 return;

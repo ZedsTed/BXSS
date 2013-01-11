@@ -14,6 +14,7 @@ public class BXSSSettings : util.PluginSettings<BXSS>
     public bool AutoHideUI { get; set; }
     public int AutoHideUIDelayInMilliseconds { get; set; }
     public int AutoIntervalDelayInSeconds { get; set; }
+    public bool EnableOutsideFlight { get; set; }
 
     public KeyCode ScreenshotKey { get; set; }
     public KeyCode DisplayKey { get; set; }

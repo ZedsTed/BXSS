@@ -165,10 +165,11 @@ class BXSSMainWindow : Window
         _collapsedLayoutOptions = new[] {GUILayout.Width(120), GUILayout.Height(60)};
     }
 
-
-
     public void OnUpdate()
     {
+        if (!_settings.EnableOutsideFlight && !IsInFlight())
+            return;
+
         _screenshot.Update();
 
         if (_autoIntervalEnabled)
@@ -193,6 +194,24 @@ class BXSSMainWindow : Window
                 _mainUIEnabled = !_mainUIEnabled;
     }
 
+    public override void Draw()
+    {
+        if (_settings.EnableOutsideFlight)
+            base.Draw();
+        else
+        {
+            if (IsInFlight())
+                base.Draw();
+            else
+                StopAutoScreenshot();
+        }
+    }
+
+    protected bool IsInFlight()
+    {
+        return (FlightGlobals.fetch != null && FlightGlobals.ActiveVessel != null);
+    }
+
     protected override void DrawCore()
     {
         Controls = _collapsed ? _collapsedControls : _expandedControls;
@@ -205,14 +224,19 @@ class BXSSMainWindow : Window
         }
     }
 
+    private void StopAutoScreenshot()
+    {
+        _screenshotToggle.Value = false;
+        _autoIntervalStopwatch.Reset();
+    }
+
     private void Screenshot()
     {
         if (_autoIntervalEnabled)
         {
             if (_autoIntervalStopwatch.IsRunning)
             {
-                _screenshotToggle.Value = false;
-                _autoIntervalStopwatch.Reset();
+                StopAutoScreenshot();
             }
             else
             {
